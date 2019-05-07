@@ -4,8 +4,10 @@
 # http://www.r-tutor.com/elementary-statistics/numerical-measures/percentile
 # http://www.cavsi.com/preguntasrespuestas/cual-es-la-diferencia-entre-media-mediana-y-moda/
 # https://www.universoformulas.com/estadistica/descriptiva/curtosis/
+# https://rviews.rstudio.com/2017/12/13/introduction-to-skewness/
 # http://www.dma.ulpgc.es/profesores/personal/stat/cursoR4ULPGC/6g-Data_frames-Listas.html
 # https://cran.r-project.org/doc/contrib/grafi3.pdf
+# http://www.mat.uda.cl/hsalinas/cursos/2011/2do/clase2.pdf
 
 #Decisiones bajo incertidumbre en las organizaciones
 
@@ -38,12 +40,11 @@ datos <- read_delim("~/github/AnalisisDatosTomaDecision/Supermarket Transactions
 #Use la función class para ver qué tipo de objeto es "datos"
 class(datos)
 
-
 #Paso 3: Calculo de la estadística básica de las variables cuantitativas del dataframe
 
-#Use la función sapply(datos, estadístico, na.rm=TRUE) (reemplace estadístico por mean,
-#sd, var) para calcular la media,desviación estándar y varianza de las tres variables
-#cuantitativas del dataframe. ?
+#Use la función sapply(datos, estadístico, na.rm=TRUE) 
+# (reemplace estadístico por mean,sd, var) 
+# para calcular la media,desviación estándar y varianza de las tres variables cuantitativas del dataframe.
 
 #### Uso de la función sapply ####
 sapply(datos[,"Children"],mean, na.rm = TRUE)
@@ -63,10 +64,9 @@ sapply(datos[,"Revenue"],sd, na.rm = TRUE)
 #### Respuesta a cuales son las tres variables cuantitativas ####
 # Children, Units Sold, Revenue
 
-
 # Use la función summary(datos$Variable) 
 # (reemplace Variable por Units.Sold, Children y Revenue) 
-# para ver otra forma de calcular estadísticos descriptivos del dataframe. ?
+# para ver otra forma de calcular estadísticos descriptivos del dataframe.?
 
 #### Uso de la función summary ####
 summary(datos$`Units Sold`)
@@ -103,6 +103,7 @@ quantile(datos$Revenue,c(0.05,0.95))
 median(datos$`Units Sold`, na.rm = TRUE)
 median(datos$Children, na.rm = TRUE)
 median(datos$Revenue, na.rm = TRUE)
+
 #### Pregunta 4 ####
 #¿Cuál es la interpretación del valor resultante?
 #### Respuesta a la función median ####
@@ -125,7 +126,7 @@ kurtosis(datos$Revenue, na.rm = TRUE)
 #### Pregunta 5 ####
 # ¿Cuál es la interpretación del valor resultante?
 #### Respuesta a la función kurtosis ####
-# La curtosis indica que tan escarpada o achatada esta una curva de distribución.
+# La curtosis indica que tan escarpada o achatada esta en una curva o poligono de distribución.
 # Entonces para los datos evaluados la interpretación sería:
 # Para las variables "Units Sold y Children" que tiene un valor de -0.4381643 y -1.031539  
 # indica que tienen una curtosis "Platicúrtica" con muy poca concentración de datos en la media, 
@@ -144,17 +145,20 @@ skewness(datos$`Units Sold`)
 skewness(datos$Children)
 skewness(datos$Revenue)
 
-#### Pregunta 6
+#### Pregunta 6 ####
 # ¿Cuál es la interpretación del valor resultante?
 #### Respuesta a la funcion skewness ####
+# Para la variable "Units.Sold" su skewness es positivo, lo que indica los valores estan levemente concentrados a la derecha del histograma y son superiores a la media
+# Para la variable "children"   su skewness es negativa, lo que indica los valores estan levemente concentrados a la izquierda del histograma y son inferiores a la media
+# Para la variable "Revenue"    su skewness es positivo, lo que indica los valores estan mayormente concentrados a la derecha del histograma y son superiores a la media
 
 #Cree un dataframe A que tenga las columnas Units.Sold, Children y Revenue del objeto datos
 
-# Creo vectores con los datos
+# Creo vectores con los datos de cada una de las variables
 Units.Sold <- datos$`Units Sold`
 Children <- datos$Children
 Revenue <- datos$Revenue
-# Creo el data frame con los vectores
+# Creo el data frame con los vectores por cada variable
 dataFrame <- data.frame(Units.Sold,Children,Revenue)
 # Elimino los vectores
 rm(Units.Sold,Children,Revenue)
@@ -171,8 +175,8 @@ cor(dataFrame)
 
 #Cree un histograma para la variable Revenue
 
-#Use la función hist(Variable) para crear el histograma. Explore los argumentos de la
-#función para asignarle algún color de relleno al histograma.
+#Use la función hist(Variable) para crear el histograma. 
+# Explore los argumentos de la función para asignarle algún color de relleno al histograma.
 hist(dataFrame$Revenue, col = 'orange', ylab = "Frecuencia", xlab = "Ingresos", main = "Histograma de Ingresos")
 
 
@@ -182,11 +186,13 @@ hist(dataFrame$Revenue, col = 'orange', ylab = "Frecuencia", xlab = "Ingresos", 
 
 # Crear data frame con los ingresos y el sexo
 Revenue_x_Gender <- select(datos, Gender, Revenue)
+
 # Crear data frame con los ingresos de las mujeres
 Revenue_x_F <- Revenue_x_Gender %>% 
        filter(Gender == "F") %>% 
        select(Revenue)
-# Crear data frama con lo ingresos de los hombre
+
+# Crear data frama con lo ingresos de los hombres
 Revenue_x_M <- Revenue_x_Gender %>% 
   filter(Gender == "M") %>% 
   select(Revenue)
@@ -203,13 +209,12 @@ plot(datos$Children,datos$Revenue, main = "Diagrama de dispersión", xlab = "Can
 
 
 # Cree un gráfico boxplot para Revenue. 
-# Use la función boxplot() donde el argumento
-# es el conjunto de datos al que se le hará el boxplot.
+# Use la función boxplot() donde el argumento es el conjunto de datos al que se le hará el boxplot.
 boxplot(datos$Revenue)
 
 
-#Cuente la cantidad de registros que se presentaron en cada ciudad. Esto significa
-#contar la cantidad de ocurrencias de cada elemento de la columna City.
+#Cuente la cantidad de registros que se presentaron en cada ciudad. 
+#Esto significa contar la cantidad de ocurrencias de cada elemento de la columna City.
 
 #Use la función table() donde el argumento es el conjunto de datos en los que 
 #va a contar la cantidad de ocurrencias de cada elemento.
@@ -232,7 +237,10 @@ barplot(table(datos$City), main = "Cantidad de Registros x Ciudad", xlab = "Ciud
 #Sugerencia: cuente primero la cantidad de registros para cada Country y luego
 #use la función pie() para generar el gráfico de torta.
 
+# se cuentan la cantidad de registros x país
 Registros_x_Pais <- table(datos$Country)
+
+# Grafica de torta
 pie(table(datos$Country), 
     main = "Gráfica de registros por país", 
     labels = paste(names(Registros_x_Pais), Registros_x_Pais, sep = " - "),
